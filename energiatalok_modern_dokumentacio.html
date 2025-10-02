@@ -19,9 +19,12 @@
     </div>
   </div>
   <div id="loader" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;background:linear-gradient(120deg,#f6d365 0%,#fda085 100%);display:flex;align-items:center;justify-content:center;transition:opacity 0.7s;">
-    <div>
+    <div style="text-align:center;">
       <div class="spinner-border text-warning" style="width:5rem;height:5rem;" role="status"></div>
       <h2 style="color:#fff;text-align:center;margin-top:24px;letter-spacing:2px;text-shadow:0 2px 8px #fda08588;">Energiaital API</h2>
+      <div class="progress mt-4" style="height: 18px; width: 320px; margin: 0 auto; background:rgba(255,255,255,0.25);">
+        <div id="loader-progress" class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width:0%;font-weight:600;font-size:1.1rem;color:#222;">0%</div>
+      </div>
     </div>
   </div>
   <div class="container py-4" id="main-container" style="opacity:0;transition:opacity 0.7s;">
@@ -60,6 +63,31 @@
       </div>
       <div class="endpoint card shadow-sm">
         <div class="card-body">
+          <span class="method">GET</span> <code>/energy-drinks/:id</code><br>
+          <em>Egy energiaital lekérése azonosító alapján</em>
+          <span class="status status-200">200 OK</span>
+          <pre>{ "id": 1, "name": "Red Bull", ... }</pre>
+          <span class="status status-404">404 Not Found</span> vagy <span class="status status-500">500 Internal Server Error</span>
+        </div>
+      </div>
+      <div class="alert alert-danger mt-3">
+  <strong>POST /energy-drinks hibák:</strong>
+  <ul>
+    <li><b>400 Bad Request</b> – Hiányzó vagy hibás mezők:
+      <pre>{
+  "errors": [
+    { "name": "A 'name' mező megadása kötelező." },
+    { "caffeine": "A 'caffeine' mezőnek szám típusúnak kell lennie." }
+  ]
+}</pre>
+    </li>
+    <li><b>500 Internal Server Error</b> – Szerverhiba:
+      <pre>{ "error": "Szerverhiba történt az energiaital mentése közben" }</pre>
+    </li>
+  </ul>
+</div>
+      <div class="endpoint card shadow-sm">
+        <div class="card-body">
           <span class="method">GET</span> <code>/energy-drinks</code><br>
           <em>Az összes energiaital lekérése</em>
           <span class="status status-200">200 OK</span>
@@ -67,6 +95,14 @@
           <span class="status status-500">500 Internal Server Error</span>
         </div>
       </div>
+      <div class="alert alert-danger mt-3">
+  <strong>GET /energy-drinks hibák:</strong>
+  <ul>
+    <li><b>500 Internal Server Error</b> – Szerverhiba:
+      <pre>{ "error": "Szerverhiba történt az energiaitalok lekérdezése közben" }</pre>
+    </li>
+  </ul>
+</div>
       <div class="endpoint card shadow-sm">
         <div class="card-body">
           <span class="method">DELETE</span> <code>/energy-drinks/:id</code><br>
@@ -76,6 +112,17 @@
           <span class="status status-404">404 Not Found</span> vagy <span class="status status-500">500 Internal Server Error</span>
         </div>
       </div>
+      <div class="alert alert-danger mt-3">
+  <strong>DELETE /energy-drinks/:id hibák:</strong>
+  <ul>
+    <li><b>404 Not Found</b> – Nem létező energiaital:
+      <pre>{ "error": "Energiaital nem található." }</pre>
+    </li>
+    <li><b>500 Internal Server Error</b> – Szerverhiba:
+      <pre>{ "error": "Szerverhiba történt az energiaital törlése közben" }</pre>
+    </li>
+  </ul>
+</div>
       <div class="endpoint card shadow-sm">
         <div class="card-body">
           <span class="method">PUT</span> <code>/energy-drinks/:id</code><br>
@@ -92,6 +139,20 @@
         </div>
       </div>
     </div>
+    <div class="alert alert-danger mt-3">
+  <strong>PUT /energy-drinks/:id hibák:</strong>
+  <ul>
+    <li><b>400 Bad Request</b> – Hiányzó vagy hibás mezők:
+      <pre>{ "error": "Hiányzó vagy hibás mezők" }</pre>
+    </li>
+    <li><b>404 Not Found</b> – Nem létező energiaital:
+      <pre>{ "error": "Energiaital nem található." }</pre>
+    </li>
+    <li><b>500 Internal Server Error</b> – Szerverhiba:
+      <pre>{ "error": "Szerverhiba történt az energiaital módosítása közben" }</pre>
+    </li>
+  </ul>
+</div>
 
     <h2>Technikai részletek</h2>
     <ul class="list-group mb-4">
@@ -144,13 +205,27 @@
   <script>
     // Loader
     window.addEventListener('DOMContentLoaded', function() {
+      let progress = 0;
+      const progressBar = document.getElementById('loader-progress');
+      const loader = document.getElementById('loader');
+      const mainContainer = document.getElementById('main-container');
+      const duration = 4000;
+      const interval = 40;
+      const step = 100 / (duration / interval);
+      const timer = setInterval(function() {
+        progress += step;
+        if (progress > 100) progress = 100;
+        progressBar.style.width = progress + '%';
+        progressBar.textContent = Math.round(progress) + '%';
+      }, interval);
       setTimeout(function() {
-        document.getElementById('loader').style.opacity = 0;
-        document.getElementById('main-container').style.opacity = 1;
+        clearInterval(timer);
+        loader.style.opacity = 0;
+        mainContainer.style.opacity = 1;
         setTimeout(function() {
-          document.getElementById('loader').style.display = 'none';
+          loader.style.display = 'none';
         }, 700);
-      }, 1200);
+      }, duration);
     });
 
     // Színmód váltás

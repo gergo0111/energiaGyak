@@ -92,6 +92,20 @@ app.put('/energy-drinks/:id', async (req, res) => {
         return res.status(500).json({ error: "Szerverhiba történt az energiaital módosítása közben" });
     }
 });
+// 5. GET /energy-drinks/:id - Egy energiaital lekérése ID alapján
+app.get('/energy-drinks/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [rows] = await db.query('SELECT * FROM energy_drinks WHERE id = ?', [id]);
+        if (!rows || rows.length === 0) {
+            return res.status(404).json({ error: "Energiaital nem található." });
+        }
+        return res.status(200).json(rows[0]);
+    }
+    catch (err) {
+        return res.status(500).json({ error: "Szerverhiba történt az energiaital lekérdezése közben" });
+    }
+});
 // Szerver indítása
 const PORT = 3000;
 app.listen(PORT, () => {
