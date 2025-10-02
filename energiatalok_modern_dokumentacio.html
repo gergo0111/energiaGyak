@@ -5,86 +5,185 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Energiaital API - Modern Dokumentáció</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="energiatalok_modern_dokumentacio.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Energiaitalok REST API - Modern Dokumentáció</h1>
-    <div class="note">
+  <div id="mode-loader" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9998;align-items:center;justify-content:center;background:rgba(0,0,0,0.12);transition:opacity 0.5s;">
+    <div style="width:100vw;position:absolute;bottom:0;left:0;">
+      <svg viewBox="0 0 1440 320" style="width:100vw;max-width:100vw;display:block;"><path fill="#fda085" fill-opacity="1" d="M0,160L48,170.7C96,181,192,203,288,197.3C384,192,480,160,576,154.7C672,149,768,171,864,186.7C960,203,1056,213,1152,197.3C1248,181,1344,139,1392,117.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
+    </div>
+    <div style="position:relative;z-index:2;text-align:center;">
+      <div class="spinner-border text-warning" style="width:3rem;height:3rem;" role="status"></div>
+      <h2 style="color:#fff;text-shadow:0 2px 8px #fda08588;margin-top:18px;letter-spacing:2px;">Színmód váltás...</h2>
+    </div>
+  </div>
+  <div id="loader" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;background:linear-gradient(120deg,#f6d365 0%,#fda085 100%);display:flex;align-items:center;justify-content:center;transition:opacity 0.7s;">
+    <div>
+      <div class="spinner-border text-warning" style="width:5rem;height:5rem;" role="status"></div>
+      <h2 style="color:#fff;text-align:center;margin-top:24px;letter-spacing:2px;text-shadow:0 2px 8px #fda08588;">Energiaital API</h2>
+    </div>
+  </div>
+  <div class="container py-4" id="main-container" style="opacity:0;transition:opacity 0.7s;">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+      <h1 class="mb-0">Energiaitalok REST API</h1>
+      <div class="mt-3 mt-md-0" style="padding-top: 12px;">
+        <button class="btn btn-outline-dark me-2" onclick="setMode('white')">Fehér mód</button>
+        <button class="btn btn-outline-secondary me-2" onclick="setMode('dark')">Sötét mód</button>
+        <button class="btn btn-warning" onclick="setMode('gradient')">Színátmenet</button>
+      </div>
+    </div>
+    <div class="note mb-4">
       <strong>Alap URL:</strong> <code>http://localhost:3000</code><br>
       <strong>Adatbázis:</strong> <code>energiaGyak</code> &mdash; <strong>Tábla:</strong> <code>energy_drinks</code>
     </div>
 
     <h2>Végpontok</h2>
-
-    <div class="endpoint">
-      <span class="method">POST</span> <code>/energy-drinks</code><br>
-      <em>Új energiaital hozzáadása</em>
-      <pre>{
+    <div class="d-flex flex-column gap-4">
+      <div class="endpoint card shadow-sm">
+        <div class="card-body">
+          <span class="method">POST</span> <code>/energy-drinks</code><br>
+          <em>Új energiaital hozzáadása</em>
+          <pre>{
   "name": "Monster Ultra",
   "brand": "Monster",
   "caffeine": 150,
   "sugar_free": true
 }</pre>
-      <span class="status status-201">201 Created</span>
-      <pre>{
+          <span class="status status-201">201 Created</span>
+          <pre>{
   "message": "Energiaital sikeresen hozzáadva",
   "drinkId": 17
 }</pre>
-      <span class="status status-400">400 Bad Request</span> vagy <span class="status status-500">500 Internal Server Error</span>
-    </div>
-
-    <div class="endpoint">
-      <span class="method">GET</span> <code>/energy-drinks</code><br>
-      <em>Az összes energiaital lekérése</em>
-      <span class="status status-200">200 OK</span>
-      <pre>[{ "id": 1, "name": "Red Bull", ... }]</pre>
-      <span class="status status-500">500 Internal Server Error</span>
-    </div>
-
-    <div class="endpoint">
-      <span class="method">DELETE</span> <code>/energy-drinks/:id</code><br>
-      <em>Energiaital törlése azonosító alapján</em>
-      <span class="status status-200">200 OK</span>
-      <pre>{ "message": "Energiaital sikeresen törölve" }</pre>
-      <span class="status status-404">404 Not Found</span> vagy <span class="status status-500">500 Internal Server Error</span>
-    </div>
-
-    <div class="endpoint">
-      <span class="method">PUT</span> <code>/energy-drinks/:id</code><br>
-      <em>Energiaital módosítása</em>
-      <pre>{
+          <span class="status status-400">400 Bad Request</span> vagy <span class="status status-500">500 Internal Server Error</span>
+        </div>
+      </div>
+      <div class="endpoint card shadow-sm">
+        <div class="card-body">
+          <span class="method">GET</span> <code>/energy-drinks</code><br>
+          <em>Az összes energiaital lekérése</em>
+          <span class="status status-200">200 OK</span>
+          <pre>[{ "id": 1, "name": "Red Bull", ... }]</pre>
+          <span class="status status-500">500 Internal Server Error</span>
+        </div>
+      </div>
+      <div class="endpoint card shadow-sm">
+        <div class="card-body">
+          <span class="method">DELETE</span> <code>/energy-drinks/:id</code><br>
+          <em>Energiaital törlése azonosító alapján</em>
+          <span class="status status-200">200 OK</span>
+          <pre>{ "message": "Energiaital sikeresen törölve" }</pre>
+          <span class="status status-404">404 Not Found</span> vagy <span class="status status-500">500 Internal Server Error</span>
+        </div>
+      </div>
+      <div class="endpoint card shadow-sm">
+        <div class="card-body">
+          <span class="method">PUT</span> <code>/energy-drinks/:id</code><br>
+          <em>Energiaital módosítása</em>
+          <pre>{
   "name": "Monster Ultra Gold",
   "brand": "Monster",
   "caffeine": 160,
   "sugar_free": true
 }</pre>
-      <span class="status status-200">200 OK</span>
-      <pre>{ "message": "Energiaital sikeresen frissítve" }</pre>
-      <span class="status status-400">400 Bad Request</span>, <span class="status status-404">404 Not Found</span> vagy <span class="status status-500">500 Internal Server Error</span>
+          <span class="status status-200">200 OK</span>
+          <pre>{ "message": "Energiaital sikeresen frissítve" }</pre>
+          <span class="status status-400">400 Bad Request</span>, <span class="status status-404">404 Not Found</span> vagy <span class="status status-500">500 Internal Server Error</span>
+        </div>
+      </div>
     </div>
 
     <h2>Technikai részletek</h2>
-    <ul>
-      <li>Express.js backend, MySQL adatbázis</li>
-      <li>Minden végpont JSON választ ad vissza</li>
-      <li>Validáció, hibakezelés, státuszkódok</li>
-      <li><code>created_at</code> és <code>updated_at</code> automatikusan frissül</li>
-      <li><code>sugar_free</code> alapértelmezetten <code>false</code></li>
+    <ul class="list-group mb-4">
+      <li class="list-group-item">Express.js backend, MySQL adatbázis</li>
+      <li class="list-group-item">Minden végpont JSON választ ad vissza</li>
+      <li class="list-group-item">Validáció, hibakezelés, státuszkódok</li>
+      <li class="list-group-item"><code>created_at</code> és <code>updated_at</code> automatikusan frissül</li>
+      <li class="list-group-item"><code>sugar_free</code> alapértelmezetten <code>false</code></li>
     </ul>
 
     <h2>Státuszkódok</h2>
-    <ul>
-      <li><span class="status status-200">200 OK</span> - Sikeres lekérés, törlés, módosítás</li>
-      <li><span class="status status-201">201 Created</span> - Sikeres létrehozás</li>
-      <li><span class="status status-400">400 Bad Request</span> - Hibás vagy hiányzó adatok</li>
-      <li><span class="status status-404">404 Not Found</span> - Nem található</li>
-      <li><span class="status status-500">500 Internal Server Error</span> - Szerverhiba</li>
+    <ul class="list-unstyled" style="padding-bottom: 24px;">
+      <li class="mb-2"><span class="status status-200">200 OK</span> - Sikeres lekérés, törlés, módosítás</li>
+      <li class="mb-2"><span class="status status-201">201 Created</span> - Sikeres létrehozás</li>
+      <li class="mb-2"><span class="status status-400">400 Bad Request</span> - Hibás vagy hiányzó adatok</li>
+      <li class="mb-2"><span class="status status-404">404 Not Found</span> - Nem található</li>
+      <li class="mb-2"><span class="status status-500">500 Internal Server Error</span> - Szerverhiba</li>
     </ul>
+
+    <h2>Hibakezelés és válaszok</h2>
+<div class="card mb-4">
+  <div class="card-body">
+    <p>A végpontok minden hibás vagy hiányos kérésre részletes hibaválaszt adnak vissza. A leggyakoribb hibák:</p>
+    <ul>
+      <li><strong>400 Bad Request</strong> – Hiányzó vagy hibás mezők, például:</li>
+    </ul>
+    <pre>{
+  "errors": [
+    { "name": "A 'name' mező megadása kötelező." },
+    { "caffeine": "A 'caffeine' mezőnek szám típusúnak kell lennie." }
+  ]
+}</pre>
+    <ul>
+      <li><strong>404 Not Found</strong> – Nem létező energiaital módosítása vagy törlése esetén:</li>
+    </ul>
+    <pre>{ "error": "Energiaital nem található." }</pre>
+    <ul>
+      <li><strong>500 Internal Server Error</strong> – Adatbázis vagy szerverhiba esetén:</li>
+    </ul>
+    <pre>{ "error": "Szerverhiba történt az energiaital mentése/módosítása/törlése közben" }</pre>
+    <p><strong>PUT</strong> és <strong>POST</strong> végpontoknál a validáció minden mezőre kiterjed, a válaszban pontosan megkapod, melyik mezővel van gond. A <strong>DELETE</strong> és <strong>PUT</strong> végpontoknál, ha az adott <code>id</code> nem létezik, 404-es hibát kapsz.</p>
+    <p>Minden hiba JSON formátumban érkezik, így könnyen feldolgozható frontend vagy API kliens számára.</p>
+  </div>
+</div>
 
     <div class="footer">
       &copy; 2025 Energiaital API &mdash; Modern dokumentáció | Készítette: Gergő
     </div>
   </div>
+  <script>
+    // Loader
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        document.getElementById('loader').style.opacity = 0;
+        document.getElementById('main-container').style.opacity = 1;
+        setTimeout(function() {
+          document.getElementById('loader').style.display = 'none';
+        }, 700);
+      }, 1200);
+    });
+
+    // Színmód váltás
+    function setMode(mode) {
+      const container = document.getElementById('main-container');
+      const modeLoader = document.getElementById('mode-loader');
+      modeLoader.style.display = 'flex';
+      modeLoader.style.opacity = 1;
+      container.classList.add('fade');
+      setTimeout(() => {
+        if (mode === 'white') {
+          document.body.classList.remove('dark-mode');
+          document.body.style.background = '#f8f9fa';
+          container.style.background = '#fff';
+          container.style.color = '#222';
+        } else if (mode === 'dark') {
+          document.body.classList.add('dark-mode');
+          document.body.style.background = '#181a1b';
+          container.style.background = '#23272b';
+          container.style.color = '#f8f9fa';
+        } else {
+          document.body.classList.remove('dark-mode');
+          document.body.style.background = 'linear-gradient(120deg, #f6d365 0%, #fda085 100%)';
+          container.style.background = 'rgba(255,255,255,0.95)';
+          container.style.color = '#222';
+        }
+        container.classList.remove('fade');
+        modeLoader.style.opacity = 0;
+        setTimeout(() => {
+          modeLoader.style.display = 'none';
+        }, 500);
+      }, 500);
+    }
+  </script>
 </body>
 </html>
