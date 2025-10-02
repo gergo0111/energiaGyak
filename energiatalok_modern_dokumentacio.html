@@ -23,7 +23,9 @@
       <div class="spinner-border text-warning" style="width:5rem;height:5rem;" role="status"></div>
       <h2 style="color:#fff;text-align:center;margin-top:24px;letter-spacing:2px;text-shadow:0 2px 8px #fda08588;">Energiaital API</h2>
       <div class="progress mt-4" style="height: 18px; width: 320px; margin: 0 auto; background:rgba(255,255,255,0.25);">
-        <div id="loader-progress" class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width:0%;font-weight:600;font-size:1.1rem;color:#222;">0%</div>
+        <div id="loader-progress" class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width:0%;font-weight:600;font-size:1.1rem;color:#222;position:relative;">
+          <span id="progress-text" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:600;font-size:1.1rem;color:#222;">0%</span>
+        </div>
       </div>
     </div>
   </div>
@@ -206,17 +208,18 @@
     // Loader
     window.addEventListener('DOMContentLoaded', function() {
       let progress = 0;
-      const progressBar = document.getElementById('loader-progress');
       const loader = document.getElementById('loader');
       const mainContainer = document.getElementById('main-container');
       const duration = 4000;
       const interval = 40;
       const step = 100 / (duration / interval);
+      const progressText = document.getElementById('progress-text');
+      const progressBar = document.getElementById('loader-progress');
       const timer = setInterval(function() {
         progress += step;
         if (progress > 100) progress = 100;
         progressBar.style.width = progress + '%';
-        progressBar.textContent = Math.round(progress) + '%';
+        progressText.textContent = Math.round(progress) + '%';
       }, interval);
       setTimeout(function() {
         clearInterval(timer);
