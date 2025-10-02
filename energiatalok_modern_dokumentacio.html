@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Energiaital API - Modern Dokumentáció</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="energiatalok_modern_dokumentacio.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Energiaitalok REST API - Modern Dokumentáció</h1>
+    <div class="note">
+      <strong>Alap URL:</strong> <code>http://localhost:3000</code><br>
+      <strong>Adatbázis:</strong> <code>energiaGyak</code> &mdash; <strong>Tábla:</strong> <code>energy_drinks</code>
+    </div>
+
+    <h2>Végpontok</h2>
+
+    <div class="endpoint">
+      <span class="method">POST</span> <code>/energy-drinks</code><br>
+      <em>Új energiaital hozzáadása</em>
+      <pre>{
+  "name": "Monster Ultra",
+  "brand": "Monster",
+  "caffeine": 150,
+  "sugar_free": true
+}</pre>
+      <span class="status status-201">201 Created</span>
+      <pre>{
+  "message": "Energiaital sikeresen hozzáadva",
+  "drinkId": 17
+}</pre>
+      <span class="status status-400">400 Bad Request</span> vagy <span class="status status-500">500 Internal Server Error</span>
+    </div>
+
+    <div class="endpoint">
+      <span class="method">GET</span> <code>/energy-drinks</code><br>
+      <em>Az összes energiaital lekérése</em>
+      <span class="status status-200">200 OK</span>
+      <pre>[{ "id": 1, "name": "Red Bull", ... }]</pre>
+      <span class="status status-500">500 Internal Server Error</span>
+    </div>
+
+    <div class="endpoint">
+      <span class="method">DELETE</span> <code>/energy-drinks/:id</code><br>
+      <em>Energiaital törlése azonosító alapján</em>
+      <span class="status status-200">200 OK</span>
+      <pre>{ "message": "Energiaital sikeresen törölve" }</pre>
+      <span class="status status-404">404 Not Found</span> vagy <span class="status status-500">500 Internal Server Error</span>
+    </div>
+
+    <div class="endpoint">
+      <span class="method">PUT</span> <code>/energy-drinks/:id</code><br>
+      <em>Energiaital módosítása</em>
+      <pre>{
+  "name": "Monster Ultra Gold",
+  "brand": "Monster",
+  "caffeine": 160,
+  "sugar_free": true
+}</pre>
+      <span class="status status-200">200 OK</span>
+      <pre>{ "message": "Energiaital sikeresen frissítve" }</pre>
+      <span class="status status-400">400 Bad Request</span>, <span class="status status-404">404 Not Found</span> vagy <span class="status status-500">500 Internal Server Error</span>
+    </div>
+
+    <h2>Technikai részletek</h2>
+    <ul>
+      <li>Express.js backend, MySQL adatbázis</li>
+      <li>Minden végpont JSON választ ad vissza</li>
+      <li>Validáció, hibakezelés, státuszkódok</li>
+      <li><code>created_at</code> és <code>updated_at</code> automatikusan frissül</li>
+      <li><code>sugar_free</code> alapértelmezetten <code>false</code></li>
+    </ul>
+
+    <h2>Státuszkódok</h2>
+    <ul>
+      <li><span class="status status-200">200 OK</span> - Sikeres lekérés, törlés, módosítás</li>
+      <li><span class="status status-201">201 Created</span> - Sikeres létrehozás</li>
+      <li><span class="status status-400">400 Bad Request</span> - Hibás vagy hiányzó adatok</li>
+      <li><span class="status status-404">404 Not Found</span> - Nem található</li>
+      <li><span class="status status-500">500 Internal Server Error</span> - Szerverhiba</li>
+    </ul>
+
+    <div class="footer">
+      &copy; 2025 Energiaital API &mdash; Modern dokumentáció | Készítette: Gergő
+    </div>
+  </div>
+</body>
+</html>
