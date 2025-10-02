@@ -18,6 +18,13 @@
       <h2 style="color:#fff;text-shadow:0 2px 8px #fda08588;margin-top:18px;letter-spacing:2px;">Színmód váltás...</h2>
     </div>
   </div>
+  <div id="checkmark-overlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10000;align-items:center;justify-content:center;background:rgba(24,24,24,0.55);backdrop-filter:blur(8px);">
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+      <span style="font-size:8rem;color:#43ea5e;text-shadow:0 2px 24px #43ea5e88;display:block;">✔️</span>
+      <div style="margin-top:24px;font-size:2.2rem;color:#fff;font-weight:700;text-shadow:0 2px 16px #222;letter-spacing:1px;">Betöltés kész!</div>
+    </div>
+  </div>
+  </div>
   <div id="loader" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;background:linear-gradient(120deg,#f6d365 0%,#fda085 100%);display:flex;align-items:center;justify-content:center;transition:opacity 0.7s;">
     <div style="text-align:center;">
       <div class="spinner-border text-warning" style="width:5rem;height:5rem;" role="status"></div>
@@ -26,6 +33,10 @@
         <div id="loader-progress" class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width:0%;font-weight:600;font-size:1.1rem;color:#222;position:relative;">
           <span id="progress-text" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:600;font-size:1.1rem;color:#222;">0%</span>
         </div>
+      </div>
+      <div id="time-left" style="margin-top:14px;color:#fff;font-size:1.15rem;font-weight:600;text-shadow:0 1px 8px #fda08588;letter-spacing:0.5px;">
+        <span style="color:#ffe082;background:rgba(0,0,0,0.08);padding:2px 10px;border-radius:8px;">Türelem, mindjárt kész!</span>
+    <span id="time-anim" style="margin-left:8px;">Már csak <span id="sec-left">4.0</span> másodperc van hátra</span>
       </div>
     </div>
   </div>
@@ -215,16 +226,34 @@
       const step = 100 / (duration / interval);
       const progressText = document.getElementById('progress-text');
       const progressBar = document.getElementById('loader-progress');
+    const timeLeft = document.getElementById('time-left');
+    const secLeft = document.getElementById('sec-left');
+    let elapsed = 0;
+    let dotCount = 0;
       const timer = setInterval(function() {
         progress += step;
         if (progress > 100) progress = 100;
         progressBar.style.width = progress + '%';
         progressText.textContent = Math.round(progress) + '%';
+          elapsed += interval;
+          let left = Math.max(0, duration - elapsed);
+          if (secLeft) secLeft.textContent = (left/1000).toFixed(1);
       }, interval);
       setTimeout(function() {
         clearInterval(timer);
         loader.style.opacity = 0;
         mainContainer.style.opacity = 1;
+        if (timeLeft) {
+          timeLeft.innerHTML = `<span style="color:#ffe082;background:rgba(0,0,0,0.08);padding:2px 10px;border-radius:8px;">Kész vagyunk!</span> <span style="margin-left:8px;">Az oldal betöltődött, jó böngészést!</span>`;
+        }
+        // Show big green checkmark overlay
+        const checkmark = document.getElementById('checkmark-overlay');
+        if (checkmark) {
+          checkmark.style.display = 'flex';
+          setTimeout(function() {
+            checkmark.style.display = 'none';
+          }, 2000);
+        }
         setTimeout(function() {
           loader.style.display = 'none';
         }, 700);
@@ -259,7 +288,7 @@
         modeLoader.style.opacity = 0;
         setTimeout(() => {
           modeLoader.style.display = 'none';
-        }, 500);
+        }, 700);
       }, 500);
     }
   </script>
