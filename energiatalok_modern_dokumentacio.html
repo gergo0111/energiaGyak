@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
+  <style>
+    /* Loader countdown slide-up and scale animation */
+    .slideup {
+      display: inline-block;
+      animation: slideUpAnim 0.5s cubic-bezier(.68,-0.55,.27,1.55);
+      backface-visibility: hidden;
+    }
+    @keyframes slideUpAnim {
+      0% { transform: translateY(40px) scale(0.7); opacity: 0.2; }
+      60% { transform: translateY(-10px) scale(1.25); opacity: 1; }
+      80% { transform: translateY(0px) scale(1.1); opacity: 1; }
+      100% { transform: translateY(0px) scale(1); opacity: 1; }
+    }
+  </style>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Energiaital API - Modern Dokumentáció</title>
@@ -35,8 +49,10 @@
         </div>
       </div>
       <div id="time-left" style="margin-top:14px;color:#fff;font-size:1.15rem;font-weight:600;text-shadow:0 1px 8px #fda08588;letter-spacing:0.5px;">
-        <span style="color:#ffe082;background:rgba(0,0,0,0.08);padding:2px 10px;border-radius:8px;">Türelem, mindjárt kész!</span>
-    <span id="time-anim" style="margin-left:8px;">Már csak <span id="sec-left">4.0</span> másodperc van hátra</span>
+        <span id="loader-main-msg" style="color:#ffe082;background:rgba(0,0,0,0.08);padding:2px 18px;border-radius:12px;font-size:2.1rem;font-weight:700;display:inline-block;">Türelem, mindjárt kész!</span>
+        <div id="time-anim" style="margin-top:10px;font-size:1.35rem;font-weight:600;">
+          <span id="sec-left" style="display:inline-block;transition:transform 0.25s cubic-bezier(.68,-0.55,.27,1.55);">4.0</span> másodperc van hátra
+        </div>
       </div>
     </div>
   </div>
@@ -44,9 +60,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
       <h1 class="mb-0">Energiaitalok REST API</h1>
       <div class="mt-3 mt-md-0" style="padding-top: 12px;">
-        <button class="btn btn-outline-dark me-2" onclick="setMode('white')">Fehér mód</button>
-        <button class="btn btn-outline-secondary me-2" onclick="setMode('dark')">Sötét mód</button>
-        <button class="btn btn-warning" onclick="setMode('gradient')">Színátmenet</button>
+         <button class="btn btn-outline-dark me-2" onclick="setMode('white')">Fehér mód</button>
+         <button class="btn btn-outline-secondary me-2" onclick="setMode('dark')">Sötét mód</button>
+         <button class="btn btn-warning me-2" onclick="setMode('gradient')">Színátmenet</button>
       </div>
     </div>
     <div class="note mb-4">
@@ -216,6 +232,62 @@
     </div>
   </div>
   <script>
+    // Demo dictionary for static translation
+    const huZhDict = {
+      'Energiaitalok REST API': '能量饮料 REST API',
+      'Fehér mód': '白色模式',
+      'Sötét mód': '黑暗模式',
+      'Színátmenet': '渐变模式',
+      'Fordítás kínaira': '翻译成中文',
+      'Alap URL:': '基本网址:',
+      'Adatbázis:': '数据库:',
+      'Tábla:': '表:',
+      'Végpontok': '端点',
+      'Új energiaital hozzáadása': '添加新的能量饮料',
+      'Egy energiaital lekérése azonosító alapján': '根据ID获取能量饮料',
+      'Az összes energiaital lekérése': '获取所有能量饮料',
+      'Energiaital törlése azonosító alapján': '根据ID删除能量饮料',
+      'Energiaital módosítása': '修改能量饮料',
+      'Technikai részletek': '技术细节',
+      'Express.js backend, MySQL adatbázis': 'Express.js 后端, MySQL 数据库',
+      'Minden végpont JSON választ ad vissza': '所有端点返回 JSON 响应',
+      'Validáció, hibakezelés, státuszkódok': '验证、错误处理、状态码',
+      'Státuszkódok': '状态码',
+      'Hibakezelés és válaszok': '错误处理和响应',
+      'Betöltés kész!': '加载完成！',
+      'Türelem, mindjárt kész!': '请稍候，马上完成！',
+      'Már csak': '还剩',
+      'másodperc van hátra': '秒剩余',
+      'Kész vagyunk!': '我们完成了！',
+      'Az oldal betöltődött, jó böngészést!': '页面已加载，祝您浏览愉快！',
+      // ...add more as needed
+    };
+
+    function translateToChinese() {
+      // Only translate content text, skip buttons and controls
+      const tags = ['h1','h2','h3','h4','h5','h6','p','li','strong','em','label','div','span'];
+      tags.forEach(tag => {
+        document.querySelectorAll(tag).forEach(el => {
+          // Skip if inside a button or is a button
+          if (el.closest('button') || el.tagName.toLowerCase() === 'button') return;
+          // Only replace if exact match in dict
+          const txt = el.textContent.trim();
+          if (huZhDict[txt]) {
+            // Only replace textContent, preserve HTML structure and styles
+            el.textContent = huZhDict[txt];
+          } else {
+            // Try partial replacements for phrases, but preserve HTML
+            let replaced = txt;
+            Object.keys(huZhDict).forEach(hu => {
+              if (replaced.includes(hu)) {
+                replaced = replaced.replace(hu, huZhDict[hu]);
+              }
+            });
+            el.textContent = replaced;
+          }
+        });
+      });
+    }
     // Loader
     window.addEventListener('DOMContentLoaded', function() {
       let progress = 0;
@@ -226,18 +298,28 @@
       const step = 100 / (duration / interval);
       const progressText = document.getElementById('progress-text');
       const progressBar = document.getElementById('loader-progress');
-    const timeLeft = document.getElementById('time-left');
-    const secLeft = document.getElementById('sec-left');
-    let elapsed = 0;
-    let dotCount = 0;
+      const timeLeft = document.getElementById('time-left');
+      const secLeft = document.getElementById('sec-left');
+      let elapsed = 0;
+      let lastPulseSec = null;
       const timer = setInterval(function() {
         progress += step;
         if (progress > 100) progress = 100;
         progressBar.style.width = progress + '%';
         progressText.textContent = Math.round(progress) + '%';
-          elapsed += interval;
-          let left = Math.max(0, duration - elapsed);
-          if (secLeft) secLeft.textContent = (left/1000).toFixed(1);
+        elapsed += interval;
+        let left = Math.max(0, duration - elapsed);
+        if (secLeft) {
+          // Only show whole seconds, counting down
+          const secInt = Math.ceil(left/1000);
+          if (lastPulseSec !== secInt) {
+            secLeft.classList.remove('slideup');
+            void secLeft.offsetWidth;
+            secLeft.classList.add('slideup');
+            secLeft.textContent = secInt > 0 ? secInt : 1;
+            lastPulseSec = secInt;
+          }
+        }
       }, interval);
       setTimeout(function() {
         clearInterval(timer);
